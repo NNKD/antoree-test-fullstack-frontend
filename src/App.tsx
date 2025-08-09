@@ -1,8 +1,10 @@
+import {Outlet} from "react-router-dom";
+
 function App() {
 
   return (
     <>
-        <p className="text-pink-300 text-2xl">Test Tailwind</p>
+        <Outlet/>
     </>
   )
 }
