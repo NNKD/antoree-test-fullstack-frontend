@@ -1,6 +1,6 @@
 import axios from "axios";
 import {env} from "../config/env.ts";
-import type {UserRegisterDTO} from "../dtos/user-dto.ts";
+import type {UserLoginDTO, UserRegisterDTO} from "../dtos/user-dto.ts";
 
 function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
@@ -29,6 +29,20 @@ export const sendMailVerificationCode = async (email: string) => {
 export const register = async (userRegisterDTO: UserRegisterDTO) => {
     try {
         const response = await axios.post(`${env.API_URL}/users/register`, userRegisterDTO)
+
+        if (response.data.statusCode == 200 && response.data.status == 'Success') {
+            return {status: 'success', message: response.data.message};
+        }
+
+    }catch (error: unknown) {
+        console.log(error)
+        return {status: 'success', message: getErrorMessage(error)};
+    }
+}
+
+export const login = async (userLoginDTO: UserLoginDTO) => {
+    try {
+        const response = await axios.post(`${env.API_URL}/auth/login`, userLoginDTO)
 
         if (response.data.statusCode == 200 && response.data.status == 'Success') {
             return {status: 'success', message: response.data.message};
