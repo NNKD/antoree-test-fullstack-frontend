@@ -67,3 +67,17 @@ export const updateName = async (id: string, userUpdateNameDTO: UserUpdateNameDT
         return {status: 'error', message: getErrorMessage(error)};
     }
 }
+
+export const getRandomQuestion = async () => {
+    try {
+        const response = await axios.get(`${env.API_URL}/questions/random`)
+
+        if (response.data.statusCode == 200 && response.data.status == 'Success') {
+            return {data: response.data.data, status: 'success', message: response.data.message};
+        }
+
+    }catch (error: unknown) {
+        console.log(error)
+        return {status: 'error', message: getErrorMessage(error)};
+    }
+}

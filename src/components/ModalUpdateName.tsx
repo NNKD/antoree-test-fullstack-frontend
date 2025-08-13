@@ -28,7 +28,7 @@ export default function ModalUpdateName({email, userId, setMessage, setCode, set
                     <input type="text" name="name" placeholder="Your name" disabled={loadingUpdateName} className="rounded bg-transparent outline-none p-2 md:p-4 lg:p-2 2xl:p-4 w-full md:text-2xl lg:text-base 2xl:text-2xl"
                            value={name} onChange={e => setName(e.target.value)} />
                 </div>
-                <div className={`mx-auto mt-6 md:mt-8 lg:mt-6 2xl:mt-8 w-fit py-2 md:py-4 lg:py-2 2xl:py-4 px-4 md:px-8 lg:px-4 2xl:px-8 rounded font-bold text-base md:text-2xl lg:text-base 2xl:text-2xl                                
+                <div className={`mx-auto mt-6 md:mt-8 lg:mt-6 2xl:mt-8 w-fit py-2 md:py-4 lg:py-2 2xl:py-4 px-4 md:px-8 lg:px-4 2xl:px-8 rounded font-bold text-base md:text-2xl lg:text-base 2xl:text-2xl select-none                                
                                 ${loadingUpdateName ? "pointer-events-none bg-gray-300 text-gray-400" : "bg-green-400 text-white transition-all ease-in-out cursor-pointer hover:bg-green-500 hover:shadow-[0_0_3px_2px_#ccc]"}`}
                      onClick={handleUpdateName}>
                     {loadingUpdateName ? 'Loading...' : 'Continue'}
