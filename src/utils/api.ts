@@ -1,6 +1,6 @@
 import axios from "axios";
 import {env} from "../config/env.ts";
-import type {UserLoginDTO, UserRegisterDTO} from "../dtos/user-dto.ts";
+import type {UserLoginDTO, UserRegisterDTO, UserUpdateNameDTO} from "../dtos/user-dto.ts";
 
 function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
@@ -22,7 +22,7 @@ export const sendMailVerificationCode = async (email: string) => {
 
     }catch (error: unknown) {
         console.log(error)
-        return {status: 'success', message: getErrorMessage(error)};
+        return {status: 'error', message: getErrorMessage(error)};
     }
 }
 
@@ -36,7 +36,7 @@ export const register = async (userRegisterDTO: UserRegisterDTO) => {
 
     }catch (error: unknown) {
         console.log(error)
-        return {status: 'success', message: getErrorMessage(error)};
+        return {status: 'error', message: getErrorMessage(error)};
     }
 }
 
@@ -45,11 +45,25 @@ export const login = async (userLoginDTO: UserLoginDTO) => {
         const response = await axios.post(`${env.API_URL}/auth/login`, userLoginDTO)
 
         if (response.data.statusCode == 200 && response.data.status == 'Success') {
-            return {status: 'success', message: response.data.message};
+            return {data: response.data.data, status: 'success', message: response.data.message};
         }
 
     }catch (error: unknown) {
         console.log(error)
-        return {status: 'success', message: getErrorMessage(error)};
+        return {status: 'error', message: getErrorMessage(error)};
+    }
+}
+
+export const updateName = async (id: string, userUpdateNameDTO: UserUpdateNameDTO) => {
+    try {
+        const response = await axios.patch(`${env.API_URL}/users/${id}`, userUpdateNameDTO)
+
+        if (response.data.statusCode == 200 && response.data.status == 'Success') {
+            return {data: response.data.data, status: 'success', message: response.data.message};
+        }
+
+    }catch (error: unknown) {
+        console.log(error)
+        return {status: 'error', message: getErrorMessage(error)};
     }
 }

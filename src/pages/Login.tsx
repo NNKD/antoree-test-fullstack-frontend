@@ -1,9 +1,11 @@
 import {FaEnvelope, FaLock} from "react-icons/fa6";
-import {Link} from "react-router-dom";
-import {useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
 import {login} from "../utils/api.ts";
 import type {UserLoginDTO} from "../dtos/user-dto.ts";
 import NoticeUI from "../components/NoticeUI.tsx";
+import ModalUpdateName from "../components/ModalUpdateName.tsx";
+import {saveToken} from "../utils/tokens.ts";
 
 export default function Login() {
     const [email, setEmail] = useState("")
@@ -11,6 +13,11 @@ export default function Login() {
     const [message, setMessage] = useState("")
     const [type, setType] = useState("")
     const [loading, setLoading] = useState(false)
+    const [userId, setUserId] = useState("")
+    const [code, setCode] = useState("")
+    const [token, setToken] = useState("")
+    const [enableModal, setEnableModal] = useState(false)
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         setLoading(true)
@@ -19,10 +26,30 @@ export default function Login() {
             password,
         }
         const result = await login(userLogin)
+        console.log(result)
         setType(result?.status || "info")
         setMessage(result?.message)
+        if (result?.status == "success") {
+            setUserId(result?.data.id)
+            setCode(result?.data.code)
+            setToken(result?.data.token)
+        }
         setLoading(false)
     }
+
+    useEffect(() => {
+        if (code != "" && code == "UPDATE") {
+            setEnableModal(true)
+            return;
+        }
+
+        if (code != "" && code == "ACTIVED") {
+            saveToken(token)
+            navigate("/")
+            return;
+        }
+
+    }, [code])
 
     return (
         <div className="flex items-center justify-center h-screen">
@@ -52,6 +79,10 @@ export default function Login() {
                     Don't have an account? Sign up now
                 </Link>
             </div>
+
+            {enableModal ? (
+                <ModalUpdateName email={email} userId={userId} setCode={setCode} setMessage={setMessage} setType={setType}/>
+            ) : ""}
 
             <NoticeUI mess={message} type={type} />
         </div>
