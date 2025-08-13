@@ -1,5 +1,5 @@
 import {FaEnvelope, FaLock} from "react-icons/fa6";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {register, sendMailVerificationCode} from "../utils/api.ts";
 import NoticeUI from "../components/NoticeUI.tsx";
@@ -14,6 +14,7 @@ export default function Register() {
     const [message, setMessage] = useState("")
     const [type, setType] = useState("")
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
 
     // handle countdown time
     useEffect(() => {
@@ -56,11 +57,14 @@ export default function Register() {
             const result = await register(userRegisterDTO);
             setType(result?.status || "info")
             setMessage(result?.message)
+
+            if (result?.status == "success") {
+                navigate("/login")
+            }
+
             setLoading(false)
         }
     }
-
-
 
     return (
         <div className="flex items-center justify-center h-screen">
