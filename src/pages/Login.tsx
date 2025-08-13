@@ -26,7 +26,6 @@ export default function Login() {
             password,
         }
         const result = await login(userLogin)
-        console.log(result)
         setType(result?.status || "info")
         setMessage(result?.message)
         if (result?.status == "success") {
