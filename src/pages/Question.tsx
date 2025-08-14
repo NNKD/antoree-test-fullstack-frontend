@@ -50,6 +50,7 @@ export default function Question() {
         const result = await getQuestionById(id || "")
         if (result?.status == "success") {
             setQuestion(result?.data)
+            setQuestID(result?.data._id)
         }else {
             setType(result?.status || "info")
             setMessage(result?.message)
@@ -109,7 +110,7 @@ export default function Question() {
     return (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex flex-col items-center justify-center">
             {userId != "" && name != "" ? (
-                <div className="flex items-center justify-between w-1/2">
+                <div className="flex flex-col lg:flex-row items-center justify-between md:w-1/2">
                     <div className="text-xl 2xl:text-2xl">
                         Welcome, <b>{name}</b>
                     </div>
