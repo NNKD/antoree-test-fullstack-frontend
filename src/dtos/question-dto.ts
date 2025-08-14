@@ -5,3 +5,12 @@ export interface QuestionDTO {
     answer: {key: string, text: string};
     explain: string;
 }
+
+export interface CommentsDTO {
+    _id: string;
+    author: string;
+    content: string;
+    likes: string[];
+    dislikes: string[];
+};
+

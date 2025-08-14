@@ -5,6 +5,7 @@ import NoticeUI from "../components/NoticeUI.tsx";
 import type {QuestionDTO} from "../dtos/question-dto.ts";
 import {useNavigate} from "react-router-dom";
 import {FaComment, FaShare} from "react-icons/fa";
+import ModalComment from "../components/ModalComment.tsx";
 
 export default function Home() {
     const [selectedKey, setSelectedKey] = useState("");
@@ -110,6 +111,8 @@ export default function Home() {
             {showExplain ? (
                 <ModalExplainQues question={question?.question || ""} answer={question?.answer || {key: '', text: ''}} explain={question?.explain || ""} onClose={() => setShowExplain(!showExplain)}/>
             ) : ""}
+
+            <ModalComment/>
 
             <NoticeUI mess={message} type={type} />
         </div>
