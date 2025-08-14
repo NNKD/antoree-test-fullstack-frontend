@@ -1,3 +1,10 @@
+export interface UserDTO {
+    _id: string;
+    name: string;
+    email: string;
+    avatar: string;
+}
+
 export interface UserRegisterDTO {
     email: string;
     password: string;

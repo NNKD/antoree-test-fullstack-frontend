@@ -74,14 +74,14 @@ export default function Register() {
                 <div className="group flex items-center border-2 border-gray-300 rounded focus-within:border-green-400">
                     <FaEnvelope className="w-1/5 md:text-2xl lg:text-base 2xl:text-2xl text-gray-300 group-focus-within:text-green-400" />
                     <input type="email" name="email" placeholder="Email" disabled={loading} className="rounded bg-transparent outline-none p-2 md:p-4 lg:p-2 2xl:p-4 w-full md:text-2xl lg:text-base 2xl:text-2xl"
-                    value={email} onChange={e => setEmail(e.target.value)} />
+                           value={email} onChange={e => setEmail(e.target.value)} />
                 </div>
                 <div className="group flex justify-between my-6 md:my-8 lg:my-6 2xl:my-8 border-2 border-gray-300 rounded focus-within:border-green-400">
                     <input type="text" name="code" placeholder="Code" disabled={loading} className="rounded bg-transparent outline-none p-2 md:p-4 lg:p-2 2xl:p-4 md:text-2xl lg:text-base 2xl:text-2xl"
-                    value={code} onChange={e => setCode(e.target.value)} />
+                           value={code} onChange={e => setCode(e.target.value)} />
                     <div className={`min-w-[120px] flex items-center justify-center font-bold px-4
                                     ${timeLeft == 0 ? "bg-green-400 text-white transition-all ease-in-out cursor-pointer hover:bg-green-500 hover:shadow-[0_0_3px_2px_#ccc]" : "pointer-events-none bg-gray-300 text-gray-400"} }`}
-                        onClick={handleSendCode}>
+                         onClick={handleSendCode}>
                         {timeLeft == 0 ? "Send Code" : `${timeLeft}`}
                     </div>
                 </div>
@@ -89,18 +89,18 @@ export default function Register() {
                 <div className="group flex items-center my-6 md:my-8 lg:my-6 2xl:my-8 border-2 border-gray-300 rounded focus-within:border-green-400">
                     <FaLock className="w-1/5 md:text-2xl lg:text-base 2xl:text-2xl text-gray-300 group-focus-within:text-green-400"/>
                     <input type="password" name="password" placeholder="Password" disabled={loading} className="rounded bg-transparent outline-none p-2 md:p-4 lg:p-2 2xl:p-4 w-full md:text-2xl lg:text-base 2xl:text-2xl"
-                    value={password} onChange={e => setPassword(e.target.value)} />
+                           value={password} onChange={e => setPassword(e.target.value)} />
                 </div>
 
                 <div className="group flex items-center border-2 border-gray-300 rounded focus-within:border-green-400">
                     <FaLock className="w-1/5 md:text-2xl lg:text-base 2xl:text-2xl text-gray-300 group-focus-within:text-green-400"/>
                     <input type="password" name="confirm-password" placeholder="Confirm Password" disabled={loading} className="rounded bg-transparent outline-none p-2 md:p-4 lg:p-2 2xl:p-4 w-full md:text-2xl lg:text-base 2xl:text-2xl"
-                    value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
+                           value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
                 </div>
 
-                <div className={`mx-auto my-4 md:my-6 lg:my-4 2xl:my-6 w-fit py-2 md:py-4 lg:py-2 2xl:py-4 px-4 md:px-8 lg:px-4 2xl:px-8 rounded font-bold text-base md:text-2xl lg:text-base 2xl:text-2xl                                
+                <div className={`mx-auto my-4 md:my-6 lg:my-4 2xl:my-6 w-fit py-2 md:py-4 lg:py-2 2xl:py-4 px-4 md:px-8 lg:px-4 2xl:px-8 rounded font-bold text-base md:text-2xl lg:text-base 2xl:text-2xl select-none                                
                                 ${loading ? "pointer-events-none bg-gray-300 text-gray-400" : "bg-green-400 text-white transition-all ease-in-out cursor-pointer hover:bg-green-500 hover:shadow-[0_0_3px_2px_#ccc]"}`}
-                    onClick={handleRegister}>
+                     onClick={handleRegister}>
                     {loading ? 'Loading...' : 'Sign up'}
                 </div>
 
