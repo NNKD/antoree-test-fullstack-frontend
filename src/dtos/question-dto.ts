@@ -9,6 +9,7 @@ export interface QuestionDTO {
 export interface CommentsDTO {
     _id: string;
     author: string;
+    questionId: string;
     content: string;
     likes: string[];
     dislikes: string[];

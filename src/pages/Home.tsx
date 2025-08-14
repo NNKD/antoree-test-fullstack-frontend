@@ -112,7 +112,7 @@ export default function Home() {
                 <ModalExplainQues question={question?.question || ""} answer={question?.answer || {key: '', text: ''}} explain={question?.explain || ""} onClose={() => setShowExplain(!showExplain)}/>
             ) : ""}
 
-            <ModalComment/>
+            <ModalComment onShare={handleShare}/>
 
             <NoticeUI mess={message} type={type} />
         </div>
