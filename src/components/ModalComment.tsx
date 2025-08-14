@@ -4,66 +4,106 @@ import {AiFillDislike, AiFillLike} from "react-icons/ai";
 import type {CommentsDTO, QuestionDTO} from "../dtos/question-dto.ts";
 import type {UserDTO} from "../dtos/user-dto.ts";
 import {IoMdSend} from "react-icons/io";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {addComment, getQuestionComment, getUserById, updateCommentDisLikes, updateCommentLikes} from "../utils/api.ts";
+import {getUserId} from "../utils/localStorage.ts";
 
-// export default function ModalComment({question, onShare}: {question: QuestionDTO, onShare: () => void }) {
-export default function ModalComment({onShare}: {onShare: () => void }) {
-    const userId = "u1";
+export default function ModalComment({question, onShare, setType, setMessage, onClose}: {question: QuestionDTO | null, onShare: () => void, setType: (status: string) => void, setMessage: (message: string) => void, onClose: () => void }) {
     const [commentContent, setCommentContent] = useState("")
+    const [comments, setComments] = useState<CommentsDTO[]>([])
+    const [users, setUsers] = useState<UserDTO[]>([])
+    const userId = getUserId() || "";
 
-    const question: QuestionDTO = {
-        _id: "q1",
-        question: "What is 2 + 2?",
-        options: [
-            { key: "A", text: "3" },
-            { key: "B", text: "4" },
-            { key: "C", text: "5" },
-            { key: "D", text: "22" },
-        ],
-        answer: { key: "B", text: "4" },
-        explain: "2 + 2 equals 4.",
-    };
+    useEffect(() => {
+        handleGetComments()
+    }, [question])
 
-    const users: UserDTO[] = [
-        { _id: "u1", name: "Alice", email: "alice@example.com", avatar: "https://i.pravatar.cc/40?img=1" },
-        { _id: "u2", name: "Bob", email: "bob@example.com", avatar: "https://i.pravatar.cc/40?img=2" },
-        { _id: "u3", name: "Charlie", email: "charlie@example.com", avatar: "https://i.pravatar.cc/40?img=3" },
-    ];
+    const handleGetComments = async () => {
+        const result = await getQuestionComment(question?._id || "");
 
+        if (result?.status == 'success') {
+            setComments(result?.data)
+            console.log(result)
+            const allUserIds: string[] = result?.data.flatMap((comment: CommentsDTO) => [
+                comment.author,
+                ...comment.likes,
+                ...comment.dislikes
+            ]);
 
-    const comments: CommentsDTO[] = [
-        {
-            _id: "c1",
-            author: "u1",
-            questionId: "q1",
-            content: "I think the answer is B.",
-            likes: ["u2", "u3"],
-            dislikes: [],
-        },
-        {
-            _id: "c2",
-            author: "u2",
-            questionId: "q1",
-            content: "Definitely 4!",
-            likes: ["u1"],
-            dislikes: ["u3"],
-        },
-        {
-            _id: "c3",
-            author: "u3",
-            questionId: "q1",
-            content: "Are you sure it's not 22?",
+            const uniqueUserIds = [...new Set(allUserIds)];
+            console.log(uniqueUserIds);
+
+            const usersData: (UserDTO | undefined)[] = await Promise.all(
+                uniqueUserIds.map(async (id: string) => {
+                    const userResult = await getUserById(id);
+                    if (userResult?.status === 'success' && userResult.data) {
+                        console.log(userResult);
+                        return userResult.data as UserDTO;
+                    }
+                    return undefined;
+                })
+            );
+
+            setUsers(usersData.filter((u): u is UserDTO => !!u));
+
+        }else  {
+            setType("error");
+            setMessage(result?.message);
+        }
+
+    }
+
+    const handleSendComment = async () => {
+        const createCommentDTO = {
+            author: userId,
+            questionId: question?._id || "",
+            content: commentContent,
             likes: [],
-            dislikes: ["u1", "u2"],
-        },
-    ];
+            dislikes: [],
+        }
+        const result = await addComment(createCommentDTO);
+
+        if (result?.status == 'success') {
+            setCommentContent("");
+            handleGetComments();
+        }else  {
+            setType("error");
+            setMessage(result?.message);
+        }
+    }
+
+    const handleLikeComment = async (id: string) => {
+
+        const result = await updateCommentLikes(id);
+
+        if (result?.status == 'success') {
+          handleGetComments()
+        }else  {
+            setType("error");
+            setMessage(result?.message);
+        }
+    }
+
+    const handleDisLikeComment = async (id: string) => {
+
+        const result = await updateCommentDisLikes(id);
+
+        if (result?.status == 'success') {
+          handleGetComments()
+        }else  {
+            setType("error");
+            setMessage(result?.message);
+        }
+    }
+
+
 
     return (
         <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-20 flex items-center justify-center">
             <div className="relative bg-white w-fit p-4 pb-0 text-center rounded min-w-[50vw] min-h-[50vh] max-h-[80vh] max-w-[85vw] overflow-y-auto">
                 <h1 className="text-2xl 2xl:text-4xl text-green-400 font-bold">Question</h1>
                 <div className="absolute top-0 right-0 p-2
-                                hover:opacity-50 hover:cursor-pointer transition-all ease-in-out">
+                                hover:opacity-50 hover:cursor-pointer transition-all ease-in-out" onClick={() => onClose()}>
                     <IoClose className="text-2xl"/>
                 </div>
                 <div className="mx-auto border-2 w-fit p-6 rounded mt-4">
@@ -86,39 +126,46 @@ export default function ModalComment({onShare}: {onShare: () => void }) {
                     <FaShare/>
                 </div>
 
-                <div className="flex-1 border-t-2 py-4">
-                    {comments.map((comment) => (
-                        <div className="relative flex items-start gap-2 mb-4">
-                            <img src={users.find(u => u._id == comment.author)?.avatar} alt="avatar" className="rounded-full w-8" />
-                            <div className="flex flex-col gap-2 w-fit max-w-[60vw]">
-                                <div className="bg-gray-200 rounded-xl p-2 text-left break-words">
-                                    <div><b>{users.find(u => u._id == comment.author)?.name}</b></div>
-                                    <p>{comment.content}</p>
-                                </div>
-
-                                <div className="flex items-center gap-4">
-                                    <div className="text-base flex items-center gap-1">
-                                        <div>
-                                            {comment.likes.length}
-                                        </div>
-                                        <AiFillLike className={`${comment.likes.includes(userId) ? "text-green-400" : ""}`}/>
+                {comments.length > 0 ? (
+                    <div className="flex-1 border-t-2 py-4">
+                        {comments.map((comment) => (
+                            <div className="relative flex items-start gap-2 mb-4">
+                                <img src={users.find(u => u._id == comment.author)?.avatar} alt="avatar" className="rounded-full w-8" />
+                                <div className="flex flex-col gap-2 w-fit max-w-[60vw]">
+                                    <div className="bg-gray-200 rounded-xl p-2 text-left break-words">
+                                        <div><b>{users.find(u => u._id == comment.author)?.name}</b></div>
+                                        <p>{comment.content}</p>
                                     </div>
-                                    <div className="text-base flex items-center gap-1">
-                                        <div>
-                                            {comment.dislikes.length}
+
+                                    <div className="flex items-center gap-4">
+                                        <div className="text-base flex items-center gap-1 cursor-pointer">
+                                            <div>
+                                                {comment.likes.length}
+                                            </div>
+                                            <div onClick={() => handleLikeComment(comment._id)}>
+                                                <AiFillLike className={`${comment.likes.includes(userId) ? "text-green-400" : ""}`}/>
+                                            </div>
                                         </div>
-                                        <AiFillDislike className={`${comment.dislikes.includes(userId) ? "text-green-400" : ""}`} />
+                                        <div className="text-base flex items-center gap-1 cursor-pointer">
+                                            <div>
+                                                {comment.dislikes.length}
+                                            </div>
+                                            <div onClick={() => handleDisLikeComment(comment._id)}>
+                                                <AiFillDislike className={`${comment.dislikes.includes(userId) ? "text-green-400" : ""}`} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : ""}
+
 
                 <div className="sticky bottom-0 left-0 right-0 border-t-2 h-30 bg-white p-4">
                     <div className="flex flex-col rounded border-2 p-2 focus-within:border-green-400">
-                        <textarea placeholder="..." className="w-full resize-none p-2 outline-none" onChange={(e)=> setCommentContent(e.target.value)}></textarea>
-                        <div className={`ml-auto ${commentContent.length > 0 ? "cursor-pointer" : "pointer-events-none"}`}>
+                        <textarea placeholder="..." className="w-full resize-none p-2 outline-none" value={commentContent} onChange={(e)=> setCommentContent(e.target.value)}></textarea>
+                        <div className={`ml-auto ${commentContent.length > 0 ? "cursor-pointer" : "pointer-events-none"}`} onClick={handleSendComment}>
                             <IoMdSend className={`text-xl ${commentContent.length > 0 ? "text-green-400" : "text-gray-400"}`}/>
                         </div>
                     </div>

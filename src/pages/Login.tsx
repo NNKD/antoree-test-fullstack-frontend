@@ -5,7 +5,7 @@ import {login} from "../utils/api.ts";
 import type {UserLoginDTO} from "../dtos/user-dto.ts";
 import NoticeUI from "../components/NoticeUI.tsx";
 import ModalUpdateName from "../components/ModalUpdateName.tsx";
-import {saveToken} from "../utils/tokens.ts";
+import {saveToken, saveUserId} from "../utils/localStorage.ts";
 
 export default function Login() {
     const [email, setEmail] = useState("")
@@ -44,6 +44,7 @@ export default function Login() {
 
         if (code != "" && code == "ACTIVED") {
             saveToken(token)
+            saveUserId(userId)
             navigate("/")
             return;
         }

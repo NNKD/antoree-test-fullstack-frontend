@@ -16,6 +16,7 @@ export default function Home() {
     const [question, setQuestion] = useState<QuestionDTO | null>(null)
     const [questID, setQuestID] = useState("")
     const navigate = useNavigate();
+    const [enableComment, setEnableComment] = useState(false)
 
     useEffect(() => {
         handleGetRandomQuestion()
@@ -92,7 +93,8 @@ export default function Home() {
                 </div>
                 <div className="flex flex-wrap items-center justify-between">
                     <div className="my-4 md:my-6 lg:my-4 2xl:my-6 w-fit py-2 md:py-4 lg:py-2 2xl:py-4 px-4 md:px-8 lg:px-4 2xl:px-8 rounded font-bold text-base md:text-2xl lg:text-base 2xl:text-2xl select-none
-                                     bg-green-400 text-white transition-all ease-in-out cursor-pointer hover:bg-green-500  hover:shadow-[0_0_3px_2px_#ccc]">
+                                     bg-green-400 text-white transition-all ease-in-out cursor-pointer hover:bg-green-500  hover:shadow-[0_0_3px_2px_#ccc]"
+                        onClick={() => setEnableComment(!enableComment)}>
                         <FaComment />
                     </div>
                     <div className="mx-auto my-4 md:my-6 lg:my-4 2xl:my-6 w-fit py-2 md:py-4 lg:py-2 2xl:py-4 px-4 md:px-8 lg:px-4 2xl:px-8 rounded font-bold text-base md:text-2xl lg:text-base 2xl:text-2xl select-none
@@ -112,7 +114,10 @@ export default function Home() {
                 <ModalExplainQues question={question?.question || ""} answer={question?.answer || {key: '', text: ''}} explain={question?.explain || ""} onClose={() => setShowExplain(!showExplain)}/>
             ) : ""}
 
-            <ModalComment onShare={handleShare}/>
+            {enableComment ? (
+                <ModalComment question={question} onShare={handleShare} setType={setType} setMessage={setMessage} onClose={() => setEnableComment(!enableComment)}/>
+            ) : ""}
+
 
             <NoticeUI mess={message} type={type} />
         </div>
