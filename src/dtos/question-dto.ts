@@ -15,3 +15,11 @@ export interface CommentsDTO {
     dislikes: string[];
 };
 
+export interface CreateCommentsDTO {
+    author: string;
+    questionId: string;
+    content: string;
+    likes: string[];
+    dislikes: string[];
+};
+
