@@ -3,6 +3,7 @@ import App from "../App.tsx";
 import Home from "../pages/Home.tsx";
 import Login from "../pages/Login.tsx";
 import Register from "../pages/Register.tsx";
+import Question from "../pages/Question.tsx";
 
 export const route = createBrowserRouter([
     {
@@ -15,7 +16,7 @@ export const route = createBrowserRouter([
             },
             {
                 path: "/questions/:id",
-                element: <Home/>
+                element: <Question/>
             },
             {
                 path: "/login",

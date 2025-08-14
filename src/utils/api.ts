@@ -70,6 +70,22 @@ export const updateName = async (id: string, userUpdateNameDTO: UserUpdateNameDT
     }
 }
 
+export const getQuestionById = async (id: string) => {
+    try {
+        console.log(id)
+        const response = await axios.get(`${env.API_URL}/questions/${id}`)
+        console.log(response)
+
+        if (response.data.statusCode == 200 && response.data.status == 'Success') {
+            return {data: response.data.data, status: 'success', message: response.data.message};
+        }
+
+    }catch (error: unknown) {
+        console.log(error)
+        return {status: 'error', message: getErrorMessage(error)};
+    }
+}
+
 export const getRandomQuestion = async () => {
     try {
         const response = await axios.get(`${env.API_URL}/questions/random`)
@@ -101,6 +117,9 @@ export const getQuestionComment = async (questionId:string) => {
 
     }catch (error: unknown) {
         console.log(error)
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            return { status: 'error', statusCode: 401, message: getErrorMessage(error) };
+        }
         return {status: 'error', message: getErrorMessage(error)};
     }
 }
@@ -123,6 +142,9 @@ export const addComment = async (createCommentsDTO: CreateCommentsDTO) => {
 
     }catch (error: unknown) {
         console.log(error)
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            return { status: 'error', statusCode: 401, message: getErrorMessage(error) };
+        }
         return {status: 'error', message: getErrorMessage(error)};
     }
 }
@@ -145,6 +167,9 @@ export const updateCommentLikes = async (questionId: string) => {
 
     }catch (error: unknown) {
         console.log(error)
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            return { status: 'error', statusCode: 401, message: getErrorMessage(error) };
+        }
         return {status: 'error', message: getErrorMessage(error)};
     }
 }
@@ -167,6 +192,9 @@ export const updateCommentDisLikes = async (questionId: string) => {
 
     }catch (error: unknown) {
         console.log(error)
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            return { status: 'error', statusCode: 401, message: getErrorMessage(error) };
+        }
         return {status: 'error', message: getErrorMessage(error)};
     }
 }
@@ -184,3 +212,29 @@ export const getUserById = async (id: string) => {
         return {status: 'error', message: getErrorMessage(error)};
     }
 }
+
+export const getProfile = async () => {
+    try {
+        const token = getToken();
+        const response = await axios.get(`${env.API_URL}/auth/profile`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            })
+
+        if (response.data.statusCode == 200 && response.data.status == 'Success') {
+            return {data: response.data.data, status: 'success', message: response.data.message};
+        }
+
+    }catch (error: unknown) {
+        console.log(error)
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            return { status: 'error', statusCode: 401, message: getErrorMessage(error) };
+        }
+        return {status: 'error', message: getErrorMessage(error)};
+    }
+}
+
+

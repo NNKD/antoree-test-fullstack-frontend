@@ -8,7 +8,7 @@ import {useEffect, useState} from "react";
 import {addComment, getQuestionComment, getUserById, updateCommentDisLikes, updateCommentLikes} from "../utils/api.ts";
 import {getUserId} from "../utils/localStorage.ts";
 
-export default function ModalComment({question, onShare, setType, setMessage, onClose}: {question: QuestionDTO | null, onShare: () => void, setType: (status: string) => void, setMessage: (message: string) => void, onClose: () => void }) {
+export default function ModalComment({question, onShare, setType, setMessage, onClose}: {question: QuestionDTO | null, onShare: () => void, setType: (status: string) => void, setMessage: (message: string) => void, onClose: () => void}) {
     const [commentContent, setCommentContent] = useState("")
     const [comments, setComments] = useState<CommentsDTO[]>([])
     const [users, setUsers] = useState<UserDTO[]>([])
@@ -31,13 +31,11 @@ export default function ModalComment({question, onShare, setType, setMessage, on
             ]);
 
             const uniqueUserIds = [...new Set(allUserIds)];
-            console.log(uniqueUserIds);
 
             const usersData: (UserDTO | undefined)[] = await Promise.all(
                 uniqueUserIds.map(async (id: string) => {
                     const userResult = await getUserById(id);
                     if (userResult?.status === 'success' && userResult.data) {
-                        console.log(userResult);
                         return userResult.data as UserDTO;
                     }
                     return undefined;
@@ -49,6 +47,9 @@ export default function ModalComment({question, onShare, setType, setMessage, on
         }else  {
             setType("error");
             setMessage(result?.message);
+            if (result?.statusCode == 401) {
+                onClose()
+            }
         }
 
     }
@@ -69,6 +70,9 @@ export default function ModalComment({question, onShare, setType, setMessage, on
         }else  {
             setType("error");
             setMessage(result?.message);
+            if (result?.statusCode == 401) {
+                onClose()
+            }
         }
     }
 
@@ -81,6 +85,9 @@ export default function ModalComment({question, onShare, setType, setMessage, on
         }else  {
             setType("error");
             setMessage(result?.message);
+            if (result?.statusCode == 401) {
+                onClose()
+            }
         }
     }
 
@@ -93,6 +100,9 @@ export default function ModalComment({question, onShare, setType, setMessage, on
         }else  {
             setType("error");
             setMessage(result?.message);
+            if (result?.statusCode == 401) {
+                onClose()
+            }
         }
     }
 
