@@ -22,4 +22,3 @@ export interface CreateCommentsDTO {
     likes: string[];
     dislikes: string[];
 };
-
